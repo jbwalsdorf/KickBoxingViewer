@@ -30,7 +30,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
 
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.video_list, viewGroup, false);
+                .inflate(R.layout.video_list_item, viewGroup, false);
 
         return new ViewHolder(view);
     }
