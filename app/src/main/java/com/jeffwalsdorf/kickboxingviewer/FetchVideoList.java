@@ -24,8 +24,8 @@ public class FetchVideoList extends AsyncTask<String, Void, List<VideoItem>> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        dialog.setMessage("Loading...");
-        dialog.show();
+//        dialog.setMessage("Loading...");
+//        dialog.show();
     }
 
     @Override
@@ -46,13 +46,13 @@ public class FetchVideoList extends AsyncTask<String, Void, List<VideoItem>> {
     protected void onPostExecute(List<VideoItem> videoItems) {
 
 
-        FetchVideoList mFVL = new FetchVideoList(mContext);
+//        FetchVideoList mFVL = new FetchVideoList(mContext);
 
 
-
-        if(dialog.isShowing()){
-            dialog.dismiss();
-        }
+//
+//        if(dialog.isShowing()){
+//            dialog.dismiss();
+//        }
 
 //        delegate.processFinish(videoItems);
     }

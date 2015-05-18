@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -23,15 +24,20 @@ public class VideoListFragment extends Fragment {
     protected RecyclerView.LayoutManager mLayoutManager;
     private List<VideoItem> mVideoList;
 
-    private String channelId = "UC136PyHqcUNWl1q5ZHVyR9g";
+//    private String channelId = "UC136PyHqcUNWl1q5ZHVyR9g";
+    private String channelId = "UCkyx5g1im6Q1FL26XDxJYBg";
+//    private String channelId = "UCKj5FIgxeihLRLDpVqKp_aA"; //Glory
 
-
+    public interface Callback {
+        void onItemSelected(VideoItem selectedVideo);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         FetchVideoList fvl = new FetchVideoList(getActivity());
+
         try {
             mVideoList = fvl.execute(channelId).get();
         } catch (InterruptedException e) {
@@ -39,8 +45,6 @@ public class VideoListFragment extends Fragment {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
-
     }
 
 
@@ -57,9 +61,19 @@ public class VideoListFragment extends Fragment {
         mAdapter = new VideoListAdapter(getActivity(), mVideoList);
         mRecyclerView.setAdapter(mAdapter);
 
-        return rootView;
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(getActivity(),mVideoList.get(position).getTitle(),Toast.LENGTH_SHORT).show();
 
+                ((Callback) getActivity()).onItemSelected(mVideoList.get(position));
+
+            }
+        }));
+
+        return rootView;
     }
+
 
 //    @Override
 //    public void processFinish(List<VideoItem> output) {

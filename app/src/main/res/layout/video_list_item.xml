@@ -2,28 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:divider="@drawable/divider"
+    android:dividerPadding="22dp"
+    android:orientation="horizontal"
+    android:showDividers="end">
 
     <ImageView
         android:id="@+id/video_thumbnail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".4"
+        android:layout_weight=".3"
         android:adjustViewBounds="true"
         android:src="@drawable/hqdefault" />
 
-    <TextView
-        android:id="@+id/video_title"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="fill_parent"
-        android:layout_weight=".6"
-        android:text="Video Title"
-        android:textColor="@color/primary_text"
-        android:textSize="20sp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textStyle="bold"
-        android:gravity="center_vertical"/>
+        android:layout_weight=".7"
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/video_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="2"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:scrollHorizontally="true"
+            android:text="Video Title"
+            android:textColor="@color/primary_text"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/video_list_desc"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="Video Desc"
+            android:textColor="@color/primary_text"
+            android:textSize="12sp" />
+
+    </LinearLayout>
 
 </LinearLayout>
