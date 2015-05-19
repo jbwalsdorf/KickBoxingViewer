@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jeffwalsdorf.kickboxingviewer.Utils.VideoItem;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -40,11 +41,11 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
 
-        Picasso.with(mContext).load(mVideoList.get(i).getThumbnailURL()).into(viewHolder.videoThumb);
+        Picasso.with(mContext).load(mVideoList.get(i).getThumbnailHigh()).into(viewHolder.videoThumb);
         viewHolder.videoTitle.setText(mVideoList.get(i).getTitle());
 
 
-        viewHolder.videoDesc.setText(mVideoList.get(i).getDescription());
+        viewHolder.videoDesc.setText(mVideoList.get(i).getDesc());
 
         viewHolder.videoTitle.setSelected(true);
 //        setAnimation(viewHolder.container, i);

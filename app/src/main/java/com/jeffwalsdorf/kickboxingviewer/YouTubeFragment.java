@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.jeffwalsdorf.kickboxingviewer.Utils.VideoItem;
 
 public class YouTubeFragment extends Fragment {
 
@@ -56,9 +57,9 @@ public class YouTubeFragment extends Fragment {
 
             VideoItem videoItem = arguments.getParcelable(SELECTED_VIDEO);
 
-            vidId= videoItem.getId();
+            vidId= videoItem.getVideoId();
             vidTitle.setText(videoItem.getTitle());
-            vidDesc.setText(videoItem.getDescription());
+            vidDesc.setText(videoItem.getDesc());
 
 //            vidId = arguments.getString(SELECTED_VIDEO);
         }

@@ -4,6 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.jeffwalsdorf.kickboxingviewer.Utils.VideoItem;
+import com.jeffwalsdorf.kickboxingviewer.Utils.YouTubeConnector;
+
 import java.util.List;
 
 public class FetchVideoList extends AsyncTask<String, Void, List<VideoItem>> {

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall">
+
+    <ImageView
+        android:id="@+id/drawer_channel_icon"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center_vertical"
+        android:adjustViewBounds="true"
+        android:padding="16dp"
+        android:src="@drawable/photo" />
+
+    <TextView
+        android:id="@+id/drawer_channel_names"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:paddingRight="16dp"
+        android:text="Channel"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+</LinearLayout>

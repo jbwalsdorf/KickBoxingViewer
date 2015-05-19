@@ -9,15 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.jeffwalsdorf.kickboxingviewer.Utils.VideoItem;
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-/**
- * Created by Jeff on 5/13/2015.
- */
 public class VideoListFragment extends Fragment {
 
     private static final String LOG_TAG = VideoListFragment.class.getSimpleName();
+
+    public static final String CHANNEL_ID = "channelId";
 
     protected RecyclerView mRecyclerView;
     protected VideoListAdapter mAdapter;
@@ -25,8 +26,11 @@ public class VideoListFragment extends Fragment {
     private List<VideoItem> mVideoList;
 
 //    private String channelId = "UC136PyHqcUNWl1q5ZHVyR9g";
+//    private String channelId = "UCk3THNGRpNmCsRbCaWNeWSA";
     private String channelId = "UCkyx5g1im6Q1FL26XDxJYBg";
 //    private String channelId = "UCKj5FIgxeihLRLDpVqKp_aA"; //Glory
+
+    private String playlist = "UUKj5FIgxeihLRLDpVqKp_aA";
 
     public interface Callback {
         void onItemSelected(VideoItem selectedVideo);
@@ -39,7 +43,7 @@ public class VideoListFragment extends Fragment {
         FetchVideoList fvl = new FetchVideoList(getActivity());
 
         try {
-            mVideoList = fvl.execute(channelId).get();
+            mVideoList = fvl.execute(playlist).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -73,10 +77,4 @@ public class VideoListFragment extends Fragment {
 
         return rootView;
     }
-
-
-//    @Override
-//    public void processFinish(List<VideoItem> output) {
-//        mVideoList = output;
-//    }
 }
