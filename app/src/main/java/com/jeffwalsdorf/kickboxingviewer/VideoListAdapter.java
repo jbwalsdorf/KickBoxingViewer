@@ -44,7 +44,6 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
         Picasso.with(mContext).load(mVideoList.get(i).getThumbnailHigh()).into(viewHolder.videoThumb);
         viewHolder.videoTitle.setText(mVideoList.get(i).getTitle());
 
-
         viewHolder.videoDesc.setText(mVideoList.get(i).getDesc());
 
         viewHolder.videoTitle.setSelected(true);

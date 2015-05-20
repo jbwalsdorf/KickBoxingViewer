@@ -29,6 +29,9 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FetchChannelInfo fci = new FetchChannelInfo(getApplicationContext());
+
+
 //        mTitle = mDrawerTitle = getTitle();
 //
 //        mChannelNames = getResources().getStringArray(R.array.channel_names);
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements
     private void channelChanger(int position) {
         Fragment fragment = new VideoListFragment();
         Bundle args = new Bundle();
-        args.putInt(VideoListFragment.CHANNEL_ID,position);
+        args.putInt(VideoListFragment.CHANNEL_ITEM,position);
         fragment.setArguments(args);
 
         getFragmentManager().beginTransaction()

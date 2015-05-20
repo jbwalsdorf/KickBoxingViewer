@@ -50,7 +50,6 @@ public class YouTubeFragment extends Fragment {
         vidDesc = (TextView) rootView.findViewById(R.id.video_desc);
         vidTitle = (TextView) rootView.findViewById(R.id.video_title);
 
-
         Bundle arguments = getArguments();
 
         if (arguments != null && arguments.containsKey(SELECTED_VIDEO)) {

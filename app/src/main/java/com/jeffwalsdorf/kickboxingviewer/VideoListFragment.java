@@ -2,6 +2,7 @@ package com.jeffwalsdorf.kickboxingviewer;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.jeffwalsdorf.kickboxingviewer.Utils.ChannelItem;
 import com.jeffwalsdorf.kickboxingviewer.Utils.VideoItem;
 
 import java.util.List;
@@ -18,19 +20,16 @@ public class VideoListFragment extends Fragment {
 
     private static final String LOG_TAG = VideoListFragment.class.getSimpleName();
 
-    public static final String CHANNEL_ID = "channelId";
+    public static final String CHANNEL_ITEM = "channelItem";
 
-    protected RecyclerView mRecyclerView;
-    protected VideoListAdapter mAdapter;
-    protected RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView mRecyclerView;
+    private VideoListAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
     private List<VideoItem> mVideoList;
 
-//    private String channelId = "UC136PyHqcUNWl1q5ZHVyR9g";
-//    private String channelId = "UCk3THNGRpNmCsRbCaWNeWSA";
-    private String channelId = "UCkyx5g1im6Q1FL26XDxJYBg";
-//    private String channelId = "UCKj5FIgxeihLRLDpVqKp_aA"; //Glory
+    private android.support.v7.app.ActionBar mActionBar;
 
-    private String playlist = "UUKj5FIgxeihLRLDpVqKp_aA";
+    private String playlist;
 
     public interface Callback {
         void onItemSelected(VideoItem selectedVideo);
@@ -39,6 +38,16 @@ public class VideoListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle arguments = getArguments();
+
+        if (arguments != null && arguments.containsKey(CHANNEL_ITEM)) {
+            ChannelItem channelItem = arguments.getParcelable(CHANNEL_ITEM);
+
+            playlist = channelItem.getmUploadsKey();
+        } else {
+            playlist = "UUKj5FIgxeihLRLDpVqKp_aA";
+        }
 
         FetchVideoList fvl = new FetchVideoList(getActivity());
 
@@ -57,8 +66,10 @@ public class VideoListFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.youtube_video_list, container, false);
 
+        mActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-//        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -68,12 +79,41 @@ public class VideoListFragment extends Fragment {
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(getActivity(),mVideoList.get(position).getTitle(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), mVideoList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
 
                 ((Callback) getActivity()).onItemSelected(mVideoList.get(position));
 
             }
         }));
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            int mLastFirstVisibleItem = 0;
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int currentFirstVisibleItem =
+                        ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+
+
+                if (currentFirstVisibleItem > mLastFirstVisibleItem && mActionBar.isShowing()) {
+
+                    mActionBar.hide();
+
+                } else if (currentFirstVisibleItem < mLastFirstVisibleItem && !mActionBar.isShowing()) {
+
+                    mActionBar.show();
+                }
+
+                mLastFirstVisibleItem = currentFirstVisibleItem;
+            }
+        });
 
         return rootView;
     }

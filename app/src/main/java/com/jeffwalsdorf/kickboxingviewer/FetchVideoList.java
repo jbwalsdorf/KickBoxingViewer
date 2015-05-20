@@ -20,8 +20,7 @@ public class FetchVideoList extends AsyncTask<String, Void, List<VideoItem>> {
 
     public FetchVideoList(Context context) {
         mContext = context;
-        dialog= new ProgressDialog(context);
-
+//        dialog= new ProgressDialog(context);
     }
 
     @Override
