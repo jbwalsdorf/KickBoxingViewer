@@ -6,12 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jeffwalsdorf.kickboxingviewer.Utils.ChannelItem;
 import com.jeffwalsdorf.kickboxingviewer.Utils.VideoItem;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,11 +24,17 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
 
     private List<VideoItem> mVideoList;
     private Context mContext;
-//    private int lastPostion = -1;
 
-    public VideoListAdapter(Context context, List<VideoItem> videoItems) {
+    public VideoListAdapter(Context context, List<VideoItem> videoItems,
+                            ChannelItem channel, RecyclerView view) {
         mVideoList = videoItems;
         mContext = context;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        return super.getItemViewType(position);
     }
 
     @Override
@@ -46,19 +54,12 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
 
         viewHolder.videoDesc.setText(mVideoList.get(i).getDesc());
 
-        viewHolder.videoTitle.setSelected(true);
-//        setAnimation(viewHolder.container, i);
+        Date date = new Date(mVideoList.get(i).getPublishedAt().getValue());
 
+        SimpleDateFormat format = new SimpleDateFormat("EEEE, MMM d H:mm a");
+
+        viewHolder.videoPubDate.setText(format.format(date));
     }
-
-//    private void setAnimation(View view, int position) {
-//        if (position > lastPostion) {
-//            Animation animation =
-//                    AnimationUtils.loadAnimation(view.getContext(), R.anim.abc_grow_fade_in_from_bottom);
-//            view.startAnimation(animation);
-//            lastPostion = position;
-//        }
-//    }
 
     @Override
     public int getItemCount() {
@@ -69,14 +70,14 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
         private final ImageView videoThumb;
         private final TextView videoTitle;
         private final TextView videoDesc;
-        private final LinearLayout container;
+        private final TextView videoPubDate;
 
         public ViewHolder(View view) {
             super(view);
             videoThumb = (ImageView) view.findViewById(R.id.video_thumbnail);
             videoTitle = (TextView) view.findViewById(R.id.video_title);
             videoDesc = (TextView) view.findViewById(R.id.video_list_desc);
-            container = (LinearLayout) view.findViewById(R.id.video_list_container);
+            videoPubDate = (TextView) view.findViewById(R.id.video_list_publish_date);
         }
     }
 }

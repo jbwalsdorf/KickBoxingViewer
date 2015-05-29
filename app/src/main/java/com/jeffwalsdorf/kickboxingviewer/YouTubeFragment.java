@@ -5,6 +5,8 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,9 +60,9 @@ public class YouTubeFragment extends Fragment {
 
             vidId= videoItem.getVideoId();
             vidTitle.setText(videoItem.getTitle());
-            vidDesc.setText(videoItem.getDesc());
 
-//            vidId = arguments.getString(SELECTED_VIDEO);
+            vidDesc.setText(Html.fromHtml(videoItem.getDesc()));
+            vidDesc.setMovementMethod(LinkMovementMethod.getInstance());
         }
 
         YouTubePlayerFragment playerFragment = YouTubePlayerFragment.newInstance();
@@ -71,10 +73,6 @@ public class YouTubeFragment extends Fragment {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 if (!b) {
-
-//                    player = youTubePlayer;
-//                    player.cueVideo(vidId);
-
                     youTubePlayer.cueVideo(vidId);
                 }
             }

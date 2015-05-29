@@ -3,6 +3,8 @@ package com.jeffwalsdorf.kickboxingviewer.Utils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.api.client.util.DateTime;
+
 public class VideoItem implements Parcelable {
 
     private String title;
@@ -14,6 +16,7 @@ public class VideoItem implements Parcelable {
     private String thumbnailHigh;
 
     private String videoId;
+    private DateTime publishedAt;
 
     public VideoItem() {
     }
@@ -74,6 +77,15 @@ public class VideoItem implements Parcelable {
         this.videoId = videoId;
     }
 
+
+    public DateTime getPublishedAt() {
+        return publishedAt;
+    }
+
+    public void setPublishedAt(DateTime publishedAt) {
+        this.publishedAt = publishedAt;
+    }
+
     protected VideoItem(Parcel in) {
         title = in.readString();
         desc = in.readString();
@@ -82,6 +94,7 @@ public class VideoItem implements Parcelable {
         thumbnailMedium = in.readString();
         thumbnailHigh = in.readString();
         videoId = in.readString();
+        publishedAt = (DateTime) in.readValue(DateTime.class.getClassLoader());
     }
 
     @Override
@@ -98,6 +111,7 @@ public class VideoItem implements Parcelable {
         dest.writeString(thumbnailMedium);
         dest.writeString(thumbnailHigh);
         dest.writeString(videoId);
+        dest.writeValue(publishedAt);
     }
 
     @SuppressWarnings("unused")

@@ -13,16 +13,19 @@
         android:id="@+id/video_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
         android:padding="16dp"
-        android:text="Video Title" />
+        android:text="Video Title"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/primary_text"/>
 
     <TextView
         android:id="@+id/video_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Video Description" />
-
-
+        android:padding="16dp"
+        android:text="Video Description"
+        android:textSize="16sp"
+        android:textColor="@color/secondary_text"/>
 
 </LinearLayout>

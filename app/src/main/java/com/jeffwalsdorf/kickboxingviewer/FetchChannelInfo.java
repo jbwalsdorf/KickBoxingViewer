@@ -13,10 +13,16 @@ import java.util.List;
  */
 public class FetchChannelInfo extends AsyncTask<String, Void, List<ChannelItem>> {
 
+    public OnTaskCompleted delegate = null;
+
     private Context mContext;
 
     public FetchChannelInfo(Context context) {
         mContext = context;
+    }
+
+    public interface OnTaskCompleted {
+        void onTaskCompleted(List<ChannelItem> results);
     }
 
     @Override
@@ -29,5 +35,11 @@ public class FetchChannelInfo extends AsyncTask<String, Void, List<ChannelItem>>
         channelList = ytc.getChannelInfo(channels);
 
         return channelList;
+    }
+
+    @Override
+    protected void onPostExecute(List<ChannelItem> channelItems) {
+//        super.onPostExecute(channelItems);
+        delegate.onTaskCompleted(channelItems);
     }
 }

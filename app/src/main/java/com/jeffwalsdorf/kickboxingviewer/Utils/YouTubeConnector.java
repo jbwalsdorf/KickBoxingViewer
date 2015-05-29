@@ -152,6 +152,7 @@ public class YouTubeConnector {
                 item.setThumbnailMedium(result.getSnippet().getThumbnails().getMedium().getUrl());
                 item.setThumbnailHigh(result.getSnippet().getThumbnails().getHigh().getUrl());
                 item.setVideoId(result.getSnippet().getResourceId().getVideoId());
+                item.setPublishedAt(result.getSnippet().getPublishedAt());
                 items.add(item);
             }
 

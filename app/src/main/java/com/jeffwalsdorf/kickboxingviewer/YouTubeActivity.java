@@ -23,7 +23,7 @@ public class YouTubeActivity extends AppCompatActivity {
             fragment.setArguments(bundle);
 
             getFragmentManager().beginTransaction()
-                    .add(R.id.video_container,fragment)
+                    .add(R.id.video_container, fragment)
                     .commit();
         }
     }
