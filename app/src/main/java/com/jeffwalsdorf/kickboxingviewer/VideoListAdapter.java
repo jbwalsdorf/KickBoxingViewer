@@ -56,7 +56,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
 
         Date date = new Date(mVideoList.get(i).getPublishedAt().getValue());
 
-        SimpleDateFormat format = new SimpleDateFormat("EEEE, MMM d H:mm a");
+        SimpleDateFormat format = new SimpleDateFormat("EEE, MMM d h:mm a");
 
         viewHolder.videoPubDate.setText(format.format(date));
     }
