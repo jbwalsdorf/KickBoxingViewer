@@ -1,6 +1,7 @@
 package com.jeffwalsdorf.kickboxingviewer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
         VideoListFragment.Callback,
-        FetchChannelInfo.OnTaskCompleted{
+        FetchChannelInfo.OnTaskCompleted {
 
     RecyclerView mNavRecyclerView;
     RecyclerView.Adapter mNavAdapter;
@@ -40,14 +41,22 @@ public class MainActivity extends AppCompatActivity implements
 
     Toolbar mToolbar;
 
+    SharedPreferences mSharedPrefs;
+    SharedPreferences.Editor mEditor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.getSharedPreferences("VideoCounts",MODE_PRIVATE).edit().clear().commit();
+
         mToolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
+
+        mSharedPrefs = this.getSharedPreferences("VideoCounts", MODE_PRIVATE);
+        mEditor = mSharedPrefs.edit();
 
         FetchChannelInfo ftc = new FetchChannelInfo(getApplicationContext());
 
@@ -71,6 +80,11 @@ public class MainActivity extends AppCompatActivity implements
                             public void onItemClick(View view, int position) {
 
                                 mToolbar.setTitle(mChannelList.get(position).getmTitle());
+
+                                mEditor.putInt(mChannelList.get(position).getmTitle(), mChannelList.get(position).getmVideoCount().intValue());
+                                mEditor.apply();
+                                mNavAdapter.notifyItemChanged(position);
+
 
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelable(VideoListFragment.CHANNEL_ITEM,

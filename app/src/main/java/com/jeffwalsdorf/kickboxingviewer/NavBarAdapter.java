@@ -1,8 +1,12 @@
 package com.jeffwalsdorf.kickboxingviewer;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +20,18 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by Jeff on 5/20/2015.
- */
-
 public class NavBarAdapter extends RecyclerView.Adapter<NavBarAdapter.ViewHolder> {
 
     private List<ChannelItem> mChannelList;
     private Context mContext;
+    SharedPreferences mSharedPrefs;
+    SharedPreferences.Editor mEditor;
+
 
     public NavBarAdapter(Context context, List<ChannelItem> channelItems) {
         mContext = context;
         mChannelList = channelItems;
+        mSharedPrefs = context.getSharedPreferences("VideoCounts", Context.MODE_PRIVATE);
     }
 
     @Override
@@ -46,7 +50,21 @@ public class NavBarAdapter extends RecyclerView.Adapter<NavBarAdapter.ViewHolder
 
         holder.channelName.setText(mChannelList.get(position).getmTitle());
 
-//        setAnimation(holder.navCardView,position);
+        int nowCount = mChannelList.get(position).getmVideoCount().intValue();
+        int thenCount = mSharedPrefs.getInt(mChannelList.get(position).getmTitle(), 0);
+
+        int vidCount = nowCount - thenCount;
+        if (vidCount < 0) {
+            vidCount = 0;
+        }
+
+
+        Spannable spannable = new SpannableString(String.valueOf(vidCount));
+        spannable.setSpan(new BackgroundColorSpan(R.color.accent),0,1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+        holder.newVideosCount.setText(spannable);
+
+
     }
 
     @Override
@@ -58,13 +76,13 @@ public class NavBarAdapter extends RecyclerView.Adapter<NavBarAdapter.ViewHolder
 
         private final ImageView channelThumb;
         private final TextView channelName;
-        private final CardView navCardView;
+        private final TextView newVideosCount;
 
         public ViewHolder(View view) {
             super(view);
             channelThumb = (ImageView) view.findViewById(R.id.drawer_channel_icon);
             channelName = (TextView) view.findViewById(R.id.drawer_channel_name);
-            navCardView = (CardView) view.findViewById(R.id.nav_card_view);
+            newVideosCount = (TextView) view.findViewById(R.id.drawer_channel_new_vids);
         }
     }
 

@@ -40,7 +40,7 @@ public class YouTubeConnector {
         }).setApplicationName(context.getString(R.string.app_name)).build();
 
         try {
-            channelInfo = youtube.channels().list("contentDetails,snippet,brandingSettings");
+            channelInfo = youtube.channels().list("contentDetails,snippet,brandingSettings,statistics");
             channelInfo.setKey(API_KEY);
         } catch (IOException e) {
             Log.e("Channel Info", "Could not initialize: " + e);
@@ -122,6 +122,8 @@ public class YouTubeConnector {
                 item.setmBannerTVLow(result.getBrandingSettings().getImage().getBannerTvLowImageUrl());
                 item.setmBannerTVMed(result.getBrandingSettings().getImage().getBannerTvMediumImageUrl());
                 item.setmBannerTVHigh(result.getBrandingSettings().getImage().getBannerTvHighImageUrl());
+
+                item.setmVideoCount(result.getStatistics().getVideoCount());
 
                 items.add(item);
             }

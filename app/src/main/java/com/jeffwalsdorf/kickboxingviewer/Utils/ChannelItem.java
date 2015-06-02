@@ -3,6 +3,8 @@ package com.jeffwalsdorf.kickboxingviewer.Utils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.math.BigInteger;
+
 /**
  * Created by Jeff on 5/18/2015.
  */
@@ -28,6 +30,9 @@ public class ChannelItem implements Parcelable {
     private String mBannerTVMed;
     private String mBannerTVHigh;
 
+//    private long mVideoCount;
+
+    private BigInteger mVideoCount;
 
     public ChannelItem() {
     }
@@ -160,6 +165,14 @@ public class ChannelItem implements Parcelable {
         this.mBannerTVHigh = mBannerTVHigh;
     }
 
+    public BigInteger getmVideoCount() {
+        return mVideoCount;
+    }
+
+    public void setmVideoCount(BigInteger mVideoCount) {
+        this.mVideoCount = mVideoCount;
+    }
+
     protected ChannelItem(Parcel in) {
         mId = in.readString();
         mTitle = in.readString();
@@ -177,6 +190,7 @@ public class ChannelItem implements Parcelable {
         mBannerTVLow = in.readString();
         mBannerTVMed = in.readString();
         mBannerTVHigh = in.readString();
+        mVideoCount = (BigInteger) in.readValue(BigInteger.class.getClassLoader());
     }
 
     @Override
@@ -202,6 +216,7 @@ public class ChannelItem implements Parcelable {
         dest.writeString(mBannerTVLow);
         dest.writeString(mBannerTVMed);
         dest.writeString(mBannerTVHigh);
+        dest.writeValue(mVideoCount);
     }
 
     @SuppressWarnings("unused")
