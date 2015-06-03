@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity implements
                     "UCk3THNGRpNmCsRbCaWNeWSA," +
                     "UCKj5FIgxeihLRLDpVqKp_aA," +
                     "UCwsdMe9N96Bmh-EXnCTQ_ng," +
-                    "UCtmsXw9ZtWfFnGZdKVTmowA";
+                    "UCtmsXw9ZtWfFnGZdKVTmowA," +
+                    "UCYfAxp1HeaHxwzFo7NqY1iA";
 
     ActionBarDrawerToggle mDrawerToggle;
     CharSequence mDrawerTitle;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.getSharedPreferences("VideoCounts",MODE_PRIVATE).edit().clear().commit();
+//        this.getSharedPreferences("VideoCounts",MODE_PRIVATE).edit().clear().apply();
 
         mToolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
@@ -129,10 +130,10 @@ public class MainActivity extends AppCompatActivity implements
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }

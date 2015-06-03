@@ -2,16 +2,18 @@ package com.jeffwalsdorf.kickboxingviewer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.style.BackgroundColorSpan;
+import android.text.style.ReplacementSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -54,17 +56,15 @@ public class NavBarAdapter extends RecyclerView.Adapter<NavBarAdapter.ViewHolder
         int thenCount = mSharedPrefs.getInt(mChannelList.get(position).getmTitle(), 0);
 
         int vidCount = nowCount - thenCount;
+
         if (vidCount < 0) {
             vidCount = 0;
         }
 
-
         Spannable spannable = new SpannableString(String.valueOf(vidCount));
-        spannable.setSpan(new BackgroundColorSpan(R.color.accent),0,1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        spannable.setSpan(new RoundedBackgroundSpan(Color.GRAY, Color.WHITE), 0, spannable.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
-        holder.newVideosCount.setText(spannable);
-
-
+        holder.newVideosCount.setText(spannable, TextView.BufferType.SPANNABLE);
     }
 
     @Override
@@ -86,8 +86,32 @@ public class NavBarAdapter extends RecyclerView.Adapter<NavBarAdapter.ViewHolder
         }
     }
 
-    private void setAnimation(View view, int position) {
-        Animation animation = AnimationUtils.loadAnimation(view.getContext(), android.R.anim.slide_in_left);
-        view.startAnimation(animation);
+    public static class RoundedBackgroundSpan extends ReplacementSpan {
+
+        private final int mPadding = 0;
+        private int mBackgroundColor;
+        private int mTextColor;
+
+        public RoundedBackgroundSpan(int backgroundColor, int textColor) {
+            super();
+            mBackgroundColor = backgroundColor;
+            mTextColor = textColor;
+        }
+
+        @Override
+        public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
+            return (int) (mPadding + paint.measureText(text.subSequence(start, end).toString()) + mPadding);
+        }
+
+        @Override
+        public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
+            float width = paint.measureText(text.subSequence(start, end).toString());
+            RectF rect = new RectF(x, top + mPadding, x + width + 20, bottom);
+            paint.setColor(mBackgroundColor);
+            canvas.drawRoundRect(rect,8,8,paint);
+//            canvas.drawRoundRect(rect, mPadding, mPadding, paint);
+            paint.setColor(mTextColor);
+            canvas.drawText(text, start, end, x + 10, y, paint);
+        }
     }
 }
