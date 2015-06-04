@@ -29,12 +29,20 @@
             android:layout_gravity="start"
             android:background="@color/accent">
 
-            <!--Channel List-->
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/drawer_recyclerview"
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/drawer_swipe_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:choiceMode="singleChoice"/>
+                android:layout_height="match_parent">
+
+
+                <!--Channel List-->
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/drawer_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:choiceMode="singleChoice" />
+
+            </android.support.v4.widget.SwipeRefreshLayout>
 
         </RelativeLayout>
 

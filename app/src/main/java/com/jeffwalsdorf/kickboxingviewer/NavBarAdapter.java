@@ -57,14 +57,27 @@ public class NavBarAdapter extends RecyclerView.Adapter<NavBarAdapter.ViewHolder
 
         int vidCount = nowCount - thenCount;
 
-        if (vidCount < 0) {
-            vidCount = 0;
+        if (vidCount < 1) {
+            holder.newVideosCount.setVisibility(View.GONE);
+        } else {
+            Spannable spannable = new SpannableString(String.valueOf(vidCount));
+            spannable.setSpan(new RoundedBackgroundSpan(Color.GRAY, Color.WHITE),
+                    0, spannable.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+            holder.newVideosCount.setText(spannable, TextView.BufferType.SPANNABLE);
         }
 
-        Spannable spannable = new SpannableString(String.valueOf(vidCount));
-        spannable.setSpan(new RoundedBackgroundSpan(Color.GRAY, Color.WHITE), 0, spannable.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+//        if (vidCount < 0) {
+//            vidCount = 0;
+//        }
 
-        holder.newVideosCount.setText(spannable, TextView.BufferType.SPANNABLE);
+//        Spannable spannable = new SpannableString(String.valueOf(vidCount));
+//        spannable.setSpan(new RoundedBackgroundSpan(Color.GRAY, Color.WHITE),
+//                0, spannable.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+//
+//        holder.newVideosCount.setText(spannable, TextView.BufferType.SPANNABLE);
+
+
     }
 
     @Override
@@ -88,7 +101,7 @@ public class NavBarAdapter extends RecyclerView.Adapter<NavBarAdapter.ViewHolder
 
     public static class RoundedBackgroundSpan extends ReplacementSpan {
 
-        private final int mPadding = 0;
+        private final int mPadding = 10;
         private int mBackgroundColor;
         private int mTextColor;
 
@@ -106,12 +119,12 @@ public class NavBarAdapter extends RecyclerView.Adapter<NavBarAdapter.ViewHolder
         @Override
         public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
             float width = paint.measureText(text.subSequence(start, end).toString());
-            RectF rect = new RectF(x, top + mPadding, x + width + 20, bottom);
+            RectF rect = new RectF(x, top + mPadding, x + width + (2 * mPadding), bottom + mPadding);
             paint.setColor(mBackgroundColor);
-            canvas.drawRoundRect(rect,8,8,paint);
+            canvas.drawRoundRect(rect, mPadding, mPadding, paint);
 //            canvas.drawRoundRect(rect, mPadding, mPadding, paint);
             paint.setColor(mTextColor);
-            canvas.drawText(text, start, end, x + 10, y, paint);
+            canvas.drawText(text, start, end, x + mPadding, y + mPadding, paint);
         }
     }
 }

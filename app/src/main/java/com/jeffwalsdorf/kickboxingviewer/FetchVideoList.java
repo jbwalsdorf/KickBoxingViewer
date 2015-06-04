@@ -14,13 +14,13 @@ public class FetchVideoList extends AsyncTask<String, Void, List<VideoItem>> {
     private Context mContext;
     private ProgressDialog dialog;
 
-    public interface OnTaskCompleted{
+    public interface OnTaskCompleted {
         void onTaskCompleted(List<VideoItem> results);
     }
 
     public FetchVideoList(Context context) {
         mContext = context;
-        dialog= new ProgressDialog(context);
+        dialog = new ProgressDialog(context);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class FetchVideoList extends AsyncTask<String, Void, List<VideoItem>> {
 
         delegate.onTaskCompleted(videoItems);
 
-        if(dialog.isShowing()){
+        if (dialog.isShowing()) {
             dialog.dismiss();
         }
 

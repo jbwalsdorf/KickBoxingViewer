@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,8 +34,7 @@ public class MainActivity extends AppCompatActivity implements
                     "UCk3THNGRpNmCsRbCaWNeWSA," +
                     "UCKj5FIgxeihLRLDpVqKp_aA," +
                     "UCwsdMe9N96Bmh-EXnCTQ_ng," +
-                    "UCtmsXw9ZtWfFnGZdKVTmowA," +
-                    "UCYfAxp1HeaHxwzFo7NqY1iA";
+                    "UCtmsXw9ZtWfFnGZdKVTmowA";
 
     ActionBarDrawerToggle mDrawerToggle;
     CharSequence mDrawerTitle;
@@ -45,13 +45,15 @@ public class MainActivity extends AppCompatActivity implements
     SharedPreferences mSharedPrefs;
     SharedPreferences.Editor mEditor;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        this.getSharedPreferences("VideoCounts",MODE_PRIVATE).edit().clear().apply();
+        this.getSharedPreferences("VideoCounts", MODE_PRIVATE).edit().clear().apply();
 
         mToolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
@@ -59,10 +61,7 @@ public class MainActivity extends AppCompatActivity implements
         mSharedPrefs = this.getSharedPreferences("VideoCounts", MODE_PRIVATE);
         mEditor = mSharedPrefs.edit();
 
-        FetchChannelInfo ftc = new FetchChannelInfo(getApplicationContext());
-
-        ftc.delegate = this;
-        ftc.execute(channelString);
+        refreshChanList();
 
         mNavRecyclerView = (RecyclerView) findViewById(R.id.drawer_recyclerview);
         mNavRecyclerView.setHasFixedSize(true);
@@ -104,12 +103,23 @@ public class MainActivity extends AppCompatActivity implements
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
         mDrawerToggle.syncState();
 
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.drawer_swipe_container);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshChanList();
+            }
+        });
+
+        swipeRefreshLayout.setColorSchemeResources(R.color.primary, R.color.accent);
+
         if (savedInstanceState == null) {
+
+//            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.place_holder);
+
             getFragmentManager().beginTransaction()
                     .add(R.id.main_container, new VideoListFragment())
                     .commit();
@@ -130,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-//        //noinspection SimplifiableIfStatement
+        //noinspection SimplifiableIfStatement
 //        if (id == R.id.action_settings) {
 //            return true;
 //        }
@@ -150,7 +160,23 @@ public class MainActivity extends AppCompatActivity implements
     public void onTaskCompleted(List<ChannelItem> results) {
         mChannelList = results;
 
-        mNavAdapter = new NavBarAdapter(getApplicationContext(), mChannelList);
-        mNavRecyclerView.setAdapter(mNavAdapter);
+        if (mNavRecyclerView.getAdapter() == null) {
+            mNavAdapter = new NavBarAdapter(getApplicationContext(), mChannelList);
+            mNavRecyclerView.setAdapter(mNavAdapter);
+        } else {
+            mNavAdapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+//        mNavAdapter = new NavBarAdapter(getApplicationContext(), mChannelList);
+//        mNavRecyclerView.setAdapter(mNavAdapter);
+
+//        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    public void refreshChanList() {
+        FetchChannelInfo ftc = new FetchChannelInfo(getApplicationContext());
+        ftc.delegate = this;
+        ftc.execute(channelString);
     }
 }
