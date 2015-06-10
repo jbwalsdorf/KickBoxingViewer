@@ -21,6 +21,7 @@ public class VideoListFragment extends Fragment implements
     private static final String LOG_TAG = VideoListFragment.class.getSimpleName();
 
     public static final String CHANNEL_ITEM = "channelItem";
+    public static final String FAVORITE_VIDS = "favoriteVids";
 
     private RecyclerView mRecyclerView;
     private VideoListAdapter mAdapter;
@@ -35,7 +36,7 @@ public class VideoListFragment extends Fragment implements
     @Override
     public void onTaskCompleted(List<VideoItem> results) {
         mVideoList = results;
-        mAdapter = new VideoListAdapter(getActivity(), mVideoList, mChannel, mRecyclerView);
+        mAdapter = new VideoListAdapter(getActivity(), mVideoList);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -58,39 +59,48 @@ public class VideoListFragment extends Fragment implements
 
             fvl.delegate = this;
             fvl.execute(playlist);
+
+        } else if (arguments != null && arguments.containsKey(FAVORITE_VIDS)) {
+            mVideoList = arguments.getParcelableArrayList(FAVORITE_VIDS);
+            mAdapter = new VideoListAdapter(getActivity(), mVideoList);
+//            mRecyclerView.setAdapter(mAdapter);
+//            mChannel.setmTitle("Favorites");
         }
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View mRootView;
 
-        if (mChannel != null) {
-
-            mRootView = inflater.inflate(R.layout.youtube_video_list, container, false);
+        mRootView = inflater.inflate(R.layout.youtube_video_list, container, false);
 
 //            View rootView = inflater.inflate(R.layout.youtube_video_list, container, false);
 
+
+
+        mRecyclerView = (RecyclerView) mRootView.findViewById(R.id.recyclerView);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        if(mChannel!=null) {
             Picasso.with(getActivity()).load(mChannel.getmBannerMobileDefault()).into((ImageView) mRootView.findViewById(R.id.channel_header_banner));
             Picasso.with(getActivity()).load(mChannel.getmThumbnailDefault()).into((ImageView) mRootView.findViewById(R.id.channel_header_icon));
+        }else {
 
+            mRecyclerView.setAdapter(mAdapter);
+            mRootView.findViewById(R.id.channel_header_banner).setVisibility(View.GONE);
+            mRootView.findViewById(R.id.channel_header_icon).setVisibility(View.GONE);
+        }
 
-//        mActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
 
-            mRecyclerView = (RecyclerView) mRootView.findViewById(R.id.recyclerView);
-            mRecyclerView.setHasFixedSize(true);
-            mLayoutManager = new LinearLayoutManager(getActivity());
-            mRecyclerView.setLayoutManager(mLayoutManager);
-
-            mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
-                @Override
-                public void onItemClick(View view, int position) {
-
-                    ((Callback) getActivity()).onItemSelected(mVideoList.get(position));
-                }
-            }));
+                ((Callback) getActivity()).onItemSelected(mVideoList.get(position));
+            }
+        }));
 
 //        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 //
@@ -122,10 +132,7 @@ public class VideoListFragment extends Fragment implements
 //                mLastFirstVisibleItem = currentFirstVisibleItem;
 //            }
 //        });
-        } else {
-            mRootView = inflater.inflate(R.layout.video_list_placeholder, container, false);
-//            Picasso.with(getActivity()).load(R.drawable.place_holder).into((ImageView)mRootView.findViewById(R.id.video_list_placeholder_image));
-        }
+
 
         return mRootView;
     }

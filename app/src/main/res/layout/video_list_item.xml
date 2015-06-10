@@ -28,7 +28,7 @@
             android:adjustViewBounds="true"
             android:src="@drawable/hqdefault" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight=".7"
@@ -43,6 +43,7 @@
                 android:maxLines="2"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:paddingTop="4dp"
                 android:text="Video Title"
                 android:textColor="@color/primary_text"
                 android:textSize="14sp"
@@ -58,7 +59,10 @@
                 android:paddingRight="8dp"
                 android:text="Video Desc"
                 android:textColor="@color/secondary_text"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:layout_below="@+id/video_title"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
             <TextView
                 android:id="@+id/video_list_publish_date"
@@ -67,10 +71,29 @@
                 android:lines="1"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:paddingBottom="4dp"
                 android:textColor="@color/secondary_text"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/video_list_favs"
+                android:layout_toStartOf="@+id/video_list_favs" />
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/video_list_favs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:paddingLeft="8dp"
+                android:paddingRight="4dp"
+                android:paddingBottom="4dp"
+                android:src="@drawable/ic_star_border_black_24dp"
+                />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

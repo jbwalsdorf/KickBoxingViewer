@@ -33,7 +33,7 @@ public class FetchVideoList extends AsyncTask<String, Void, List<VideoItem>> {
     @Override
     protected List<VideoItem> doInBackground(String... params) {
 
-        String channel = (String) params[0];
+        String channel = params[0];
         List<VideoItem> videoList;
 
         YouTubeConnector ytc = new YouTubeConnector(mContext);

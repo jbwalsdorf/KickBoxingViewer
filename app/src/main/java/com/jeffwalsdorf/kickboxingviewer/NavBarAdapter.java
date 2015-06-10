@@ -3,13 +3,9 @@ package com.jeffwalsdorf.kickboxingviewer;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.style.ReplacementSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,11 +56,12 @@ public class NavBarAdapter extends RecyclerView.Adapter<NavBarAdapter.ViewHolder
         if (vidCount < 1) {
             holder.newVideosCount.setVisibility(View.GONE);
         } else {
-            Spannable spannable = new SpannableString(String.valueOf(vidCount));
-            spannable.setSpan(new RoundedBackgroundSpan(Color.GRAY, Color.WHITE),
-                    0, spannable.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
-            holder.newVideosCount.setText(spannable, TextView.BufferType.SPANNABLE);
+//            Spannable spannable = new SpannableString(String.valueOf(vidCount));
+//            spannable.setSpan(new RoundedBackgroundSpan(Color.GRAY, Color.WHITE),
+//                    0, spannable.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+//
+//            holder.newVideosCount.setText(spannable, TextView.BufferType.SPANNABLE);
+            holder.newVideosCount.setText(String.valueOf(vidCount));
         }
 
 //        if (vidCount < 0) {
@@ -122,7 +119,6 @@ public class NavBarAdapter extends RecyclerView.Adapter<NavBarAdapter.ViewHolder
             RectF rect = new RectF(x, top + mPadding, x + width + (2 * mPadding), bottom + mPadding);
             paint.setColor(mBackgroundColor);
             canvas.drawRoundRect(rect, mPadding, mPadding, paint);
-//            canvas.drawRoundRect(rect, mPadding, mPadding, paint);
             paint.setColor(mTextColor);
             canvas.drawText(text, start, end, x + mPadding, y + mPadding, paint);
         }

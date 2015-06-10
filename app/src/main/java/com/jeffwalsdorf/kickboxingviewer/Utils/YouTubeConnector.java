@@ -29,7 +29,7 @@ public class YouTubeConnector {
     private YouTube.Channels.List channelInfo;
 
     static final String API_KEY = YouTubeKey.DEVELOPER_KEY;
-    static final long MAX_VIDEOS = 50;
+    static final long MAX_VIDEOS = 20;
 
     public YouTubeConnector(Context context) {
 
