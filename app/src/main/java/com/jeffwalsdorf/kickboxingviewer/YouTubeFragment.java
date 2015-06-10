@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -33,6 +34,7 @@ public class YouTubeFragment extends Fragment {
     private CheckBox favButton;
     private VideoItem mVideoItem;
 
+    FavoritesHelper mFavoritesHelper;
 
     public static final String API_KEY = YouTubeKey.DEVELOPER_KEY;
 
@@ -49,12 +51,14 @@ public class YouTubeFragment extends Fragment {
 
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
 
-        View rootView = layoutInflater.inflate(R.layout.youtube_fragment, viewGroup, false);
+
+        final View rootView = layoutInflater.inflate(R.layout.youtube_fragment, viewGroup, false);
         vidDesc = (TextView) rootView.findViewById(R.id.video_desc);
         vidTitle = (TextView) rootView.findViewById(R.id.video_title);
         favButton = (CheckBox) rootView.findViewById(R.id.add_to_favorites);
 
-        changeFavColor();
+        mFavoritesHelper = new FavoritesHelper();
+
 
         Bundle arguments = getArguments();
 
@@ -67,25 +71,35 @@ public class YouTubeFragment extends Fragment {
             vidDesc.setMovementMethod(LinkMovementMethod.getInstance());
         }
 
+        if (mFavoritesHelper.isFavorited(mContext, vidId)) {
+            favButton.setChecked(true);
+        } else {
+            favButton.setChecked(false);
+        }
+
+        changeFavColor();
+
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mVideoItem.getTitle());
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+
         favButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            FavoritesHelper mFavoritesHelper;
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mFavoritesHelper = new FavoritesHelper();
 
                 if (isChecked) {
                     changeFavColor();
                     mFavoritesHelper.addFavorite(mContext, mVideoItem);
+                    Snackbar.make(rootView,"Added to favorites",Snackbar.LENGTH_SHORT).show();
+
                 } else {
                     changeFavColor();
                     mFavoritesHelper.removeFavorite(mContext, mVideoItem);
+                    Snackbar.make(rootView,"Removed from favorites",Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -104,28 +118,22 @@ public class YouTubeFragment extends Fragment {
 
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-
             }
         });
 
         return rootView;
     }
 
-    private void changeFavColor(){
+    private void changeFavColor() {
         int color;
         Drawable star = getResources().getDrawable(R.drawable.favorite_button);
 
-
-        if(favButton.isChecked()){
+        if (favButton.isChecked()) {
             color = getResources().getColor(R.color.accent);
-            favButton.setTextColor(color);
             star.setColorFilter(color, PorterDuff.Mode.SRC_IN);
             favButton.setButtonDrawable(star);
-
-
         } else {
             color = getResources().getColor(R.color.primary_text);
-            favButton.setTextColor(color);
             star.setColorFilter(color, PorterDuff.Mode.SRC_IN);
             favButton.setButtonDrawable(star);
         }

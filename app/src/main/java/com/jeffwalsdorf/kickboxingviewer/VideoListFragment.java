@@ -29,8 +29,6 @@ public class VideoListFragment extends Fragment implements
     private List<VideoItem> mVideoList;
     private ChannelItem mChannel;
 
-//    private android.support.v7.app.ActionBar mActionBar;
-
     private String playlist;
 
     @Override
@@ -63,8 +61,6 @@ public class VideoListFragment extends Fragment implements
         } else if (arguments != null && arguments.containsKey(FAVORITE_VIDS)) {
             mVideoList = arguments.getParcelableArrayList(FAVORITE_VIDS);
             mAdapter = new VideoListAdapter(getActivity(), mVideoList);
-//            mRecyclerView.setAdapter(mAdapter);
-//            mChannel.setmTitle("Favorites");
         }
     }
 
@@ -78,16 +74,15 @@ public class VideoListFragment extends Fragment implements
 //            View rootView = inflater.inflate(R.layout.youtube_video_list, container, false);
 
 
-
         mRecyclerView = (RecyclerView) mRootView.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        if(mChannel!=null) {
+        if (mChannel != null) {
             Picasso.with(getActivity()).load(mChannel.getmBannerMobileDefault()).into((ImageView) mRootView.findViewById(R.id.channel_header_banner));
             Picasso.with(getActivity()).load(mChannel.getmThumbnailDefault()).into((ImageView) mRootView.findViewById(R.id.channel_header_icon));
-        }else {
+        } else {
 
             mRecyclerView.setAdapter(mAdapter);
             mRootView.findViewById(R.id.channel_header_banner).setVisibility(View.GONE);
@@ -135,5 +130,14 @@ public class VideoListFragment extends Fragment implements
 
 
         return mRootView;
+    }
+
+    @Override
+    public void onResume() {
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
+
+        super.onResume();
     }
 }

@@ -6,9 +6,15 @@
     android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="56dp" />
+
+    <FrameLayout
         android:id="@+id/youtube_fragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/placeholder" />
 
     <TextView
         android:id="@+id/video_title"
@@ -29,15 +35,13 @@
     <CheckBox
         android:id="@+id/add_to_favorites"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_alignBottom="@+id/video_title"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/youtube_fragment"
         android:button="@null"
         android:gravity="center"
-
-        android:text="Favorite"
         android:paddingRight="16dp"
         android:paddingTop="16dp" />
 
@@ -45,6 +49,8 @@
         android:id="@+id/video_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@id/video_title"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
@@ -52,6 +58,5 @@
         android:text="Video Description"
         android:textColor="@color/secondary_text"
         android:textSize="16sp" />
-
 
 </RelativeLayout>
