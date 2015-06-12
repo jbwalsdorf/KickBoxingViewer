@@ -22,6 +22,7 @@ import com.jeffwalsdorf.kickboxingviewer.Utils.FavoritesHelper;
 import com.jeffwalsdorf.kickboxingviewer.Utils.VideoItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
@@ -131,6 +132,8 @@ public class MainActivity extends AppCompatActivity implements
 
                 FavoritesHelper favoritesHelper = new FavoritesHelper();
                 ArrayList<VideoItem> favVids = (ArrayList) favoritesHelper.loadFavorites(getApplicationContext());
+                Collections.sort(favVids);
+
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList(VideoListFragment.FAVORITE_VIDS, favVids);
 

@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.api.client.util.DateTime;
 
-public class VideoItem implements Parcelable {
+public class VideoItem implements Parcelable, Comparable<VideoItem> {
 
     private String title;
     private String desc;
@@ -77,7 +77,6 @@ public class VideoItem implements Parcelable {
         this.videoId = videoId;
     }
 
-
     public DateTime getPublishedAt() {
         return publishedAt;
     }
@@ -126,4 +125,12 @@ public class VideoItem implements Parcelable {
             return new VideoItem[size];
         }
     };
+
+    @Override
+    public int compareTo(VideoItem another) {
+        String a = getPublishedAt().toString();
+        String b = another.getPublishedAt().toString();
+
+        return b.compareTo(a);
+    }
 }

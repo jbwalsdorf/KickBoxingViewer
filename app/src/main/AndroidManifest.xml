@@ -20,7 +20,7 @@
 
         <activity
             android:name=".YouTubeActivity"
-            android:label="Fight Video"
+            android:label=""
             android:parentActivityName=".MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"></activity>
 

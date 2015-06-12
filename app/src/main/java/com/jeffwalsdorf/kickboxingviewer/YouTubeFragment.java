@@ -3,15 +3,21 @@ package com.jeffwalsdorf.kickboxingviewer;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -36,9 +42,16 @@ public class YouTubeFragment extends Fragment {
 
     FavoritesHelper mFavoritesHelper;
 
+    private ShareActionProvider mShareActionProvider;
+
     public static final String API_KEY = YouTubeKey.DEVELOPER_KEY;
 
     public static final String SELECTED_VIDEO = "selected_video";
+    private static final String YOUTUBE_URL = " https://youtu.be/";
+
+    public YouTubeFragment(){
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -80,7 +93,7 @@ public class YouTubeFragment extends Fragment {
         changeFavColor();
 
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mVideoItem.getTitle());
+//            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mVideoItem.getTitle());
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -94,12 +107,12 @@ public class YouTubeFragment extends Fragment {
                 if (isChecked) {
                     changeFavColor();
                     mFavoritesHelper.addFavorite(mContext, mVideoItem);
-                    Snackbar.make(rootView,"Added to favorites",Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(rootView, "Added to favorites", Snackbar.LENGTH_SHORT).show();
 
                 } else {
                     changeFavColor();
                     mFavoritesHelper.removeFavorite(mContext, mVideoItem);
-                    Snackbar.make(rootView,"Removed from favorites",Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(rootView, "Removed from favorites", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -137,5 +150,31 @@ public class YouTubeFragment extends Fragment {
             star.setColorFilter(color, PorterDuff.Mode.SRC_IN);
             favButton.setButtonDrawable(star);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_youtube, menu);
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        mShareActionProvider.setShareIntent(createShareForecastIntent());
+//        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+//    @Override
+//    public void onPrepareOptionsMenu(Menu menu) {
+//        super.onPrepareOptionsMenu(menu);
+//        MenuItem menuShare = menu.findItem(R.id.menu_item_share);
+//        ShareActionProvider shareAction = (ShareActionProvider) menuShare.getActionProvider();
+//        shareAction.setShareIntent(createShareForecastIntent());
+//    }
+
+    private Intent createShareForecastIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        String extraText = YOUTUBE_URL + mVideoItem.getVideoId();
+        shareIntent.putExtra(Intent.EXTRA_TEXT, extraText);
+        return shareIntent;
     }
 }
