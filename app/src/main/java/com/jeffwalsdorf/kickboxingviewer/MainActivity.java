@@ -132,7 +132,10 @@ public class MainActivity extends AppCompatActivity implements
 
                 FavoritesHelper favoritesHelper = new FavoritesHelper();
                 ArrayList<VideoItem> favVids = (ArrayList) favoritesHelper.loadFavorites(getApplicationContext());
-                Collections.sort(favVids);
+
+                if (favVids != null) {
+                    Collections.sort(favVids);
+                }
 
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList(VideoListFragment.FAVORITE_VIDS, favVids);
@@ -153,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements
 
             getSupportActionBar().setTitle("Choose a channel");
             mDrawerLayout.openDrawer(GravityCompat.START);
-
 
 //            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.place_holder);
 
