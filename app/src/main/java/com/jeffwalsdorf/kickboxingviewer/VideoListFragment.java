@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,19 +72,35 @@ public class VideoListFragment extends Fragment implements
 
         mRootView = inflater.inflate(R.layout.youtube_video_list, container, false);
 
-//            View rootView = inflater.inflate(R.layout.youtube_video_list, container, false);
-
-
         mRecyclerView = (RecyclerView) mRootView.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         if (mChannel != null) {
-            Picasso.with(getActivity()).load(mChannel.getmBannerMobileDefault()).into((ImageView) mRootView.findViewById(R.id.channel_header_banner));
-            Picasso.with(getActivity()).load(mChannel.getmThumbnailDefault()).into((ImageView) mRootView.findViewById(R.id.channel_header_icon));
-        } else {
 
+            int density = getActivity().getResources().getDisplayMetrics().densityDpi;
+
+            if (density >= DisplayMetrics.DENSITY_XHIGH) {
+                Picasso.with(getActivity()).load(mChannel.getmBannerMobileExtraHD()).into((ImageView) mRootView.findViewById(R.id.channel_header_banner));
+                Picasso.with(getActivity()).load(mChannel.getmThumbnailHigh()).into((ImageView) mRootView.findViewById(R.id.channel_header_icon));
+            } else if (density >= DisplayMetrics.DENSITY_HIGH) {
+                Picasso.with(getActivity()).load(mChannel.getmBannerMobileHD()).into((ImageView) mRootView.findViewById(R.id.channel_header_banner));
+                Picasso.with(getActivity()).load(mChannel.getmThumbnailHigh()).into((ImageView) mRootView.findViewById(R.id.channel_header_icon));
+            } else if (density >= DisplayMetrics.DENSITY_MEDIUM) {
+                Picasso.with(getActivity()).load(mChannel.getmBannerMobileMed()).into((ImageView) mRootView.findViewById(R.id.channel_header_banner));
+                Picasso.with(getActivity()).load(mChannel.getmThumbnailMedium()).into((ImageView) mRootView.findViewById(R.id.channel_header_icon));
+            } else if (density >= DisplayMetrics.DENSITY_LOW) {
+                Picasso.with(getActivity()).load(mChannel.getmBannerMobileLow()).into((ImageView) mRootView.findViewById(R.id.channel_header_banner));
+                Picasso.with(getActivity()).load(mChannel.getmThumbnailDefault()).into((ImageView) mRootView.findViewById(R.id.channel_header_icon));
+            } else {
+                Picasso.with(getActivity()).load(mChannel.getmBannerMobileDefault()).into((ImageView) mRootView.findViewById(R.id.channel_header_banner));
+                Picasso.with(getActivity()).load(mChannel.getmThumbnailDefault()).into((ImageView) mRootView.findViewById(R.id.channel_header_icon));
+            }
+
+//            Picasso.with(getActivity()).load(mChannel.getmBannerMobileDefault()).into((ImageView) mRootView.findViewById(R.id.channel_header_banner));
+//            Picasso.with(getActivity()).load(mChannel.getmThumbnailDefault()).into((ImageView) mRootView.findViewById(R.id.channel_header_icon));
+        } else {
             mRecyclerView.setAdapter(mAdapter);
             mRootView.findViewById(R.id.channel_header_banner).setVisibility(View.GONE);
             mRootView.findViewById(R.id.channel_header_icon).setVisibility(View.GONE);

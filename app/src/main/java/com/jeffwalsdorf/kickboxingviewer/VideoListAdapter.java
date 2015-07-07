@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +33,14 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     private Drawable mStar;
     private Drawable mStarBorder;
 
+    DisplayMetrics mMetrics;
+
 //    public VideoListAdapter(Context context, List<VideoItem> videoItems,
 //                            ChannelItem channel, RecyclerView view) {
 
     public VideoListAdapter(Context context, List<VideoItem> videoItems) {
+
+        mMetrics = context.getResources().getDisplayMetrics();
 
         mVideoList = videoItems;
         mContext = context;
@@ -68,7 +73,14 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
 
-        Picasso.with(mContext).load(mVideoList.get(i).getThumbnailHigh()).into(viewHolder.videoThumb);
+        if (mMetrics.densityDpi>=DisplayMetrics.DENSITY_HIGH){
+            Picasso.with(mContext).load(mVideoList.get(i).getThumbnailHigh()).into(viewHolder.videoThumb);
+        }else if (mMetrics.densityDpi>=DisplayMetrics.DENSITY_MEDIUM){
+            Picasso.with(mContext).load(mVideoList.get(i).getThumbnailMedium()).into(viewHolder.videoThumb);
+        }else {
+            Picasso.with(mContext).load(mVideoList.get(i).getThumbnailDefault()).into(viewHolder.videoThumb);
+        }
+
         viewHolder.videoTitle.setText(mVideoList.get(i).getTitle());
 
         viewHolder.videoDesc.setText(mVideoList.get(i).getDesc());

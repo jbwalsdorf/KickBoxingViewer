@@ -15,8 +15,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.jeffwalsdorf.kickboxingviewer.Utils.ChannelItem;
 import com.jeffwalsdorf.kickboxingviewer.Utils.FavoritesHelper;
 import com.jeffwalsdorf.kickboxingviewer.Utils.VideoItem;
@@ -50,7 +53,12 @@ public class MainActivity extends AppCompatActivity implements
     SharedPreferences mSharedPrefs;
     SharedPreferences.Editor mEditor;
 
+    private AdView mAdView;
+
     private SwipeRefreshLayout swipeRefreshLayout;
+
+    public static GoogleAnalytics mAnalytics;
+    public static Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +69,23 @@ public class MainActivity extends AppCompatActivity implements
 //        this.getSharedPreferences("VideoCounts", MODE_PRIVATE).edit().clear().apply();
 //        this.getSharedPreferences(FavoritesHelper.PREFS_NAME, MODE_PRIVATE).edit().clear().apply();
 
+        mAnalytics = GoogleAnalytics.getInstance(this);
+        mAnalytics.setLocalDispatchPeriod(1800);
+        mTracker = mAnalytics.newTracker(YouTubeKey.ANALYTICS_KEY);
+        mTracker.enableExceptionReporting(true);
+        mTracker.enableAdvertisingIdCollection(true);
+        mTracker.enableAutoActivityTracking(true);
+        mTracker.setScreenName("main screen");
+
         mToolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+//        mAdView = (AdView) findViewById(R.id.adView);
+//        AdRequest adRequest = new AdRequest.Builder()
+//                .build();
+//        mAdView.loadAd(adRequest);
 
         mSharedPrefs = this.getSharedPreferences("VideoCounts", MODE_PRIVATE);
         mEditor = mSharedPrefs.edit();
@@ -86,31 +107,81 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onItemClick(View view, int position) {
 
-                        mToolbar.setTitle(mChannelList.get(position).getmTitle());
+                        if (position == 0) {
 
-                        //Update view counts on nav drawer
-                        mEditor.putInt(mChannelList.get(position).getmTitle(),
-                                mChannelList.get(position).getmVideoCount().intValue());
-                        mEditor.apply();
-                        mNavAdapter.notifyItemChanged(position);
-//                        mNavAdapter.notifyDataSetChanged();
+                            mTracker.send(new HitBuilders.EventBuilder()
+                                    .setCategory("UX")
+                                    .setAction("click")
+                                    .setLabel("Favorites")
+                                    .build());
 
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable(VideoListFragment.CHANNEL_ITEM,
-                                mChannelList.get(position));
+                            mToolbar.setTitle("Favorites");
 
-                        VideoListFragment fragment = new VideoListFragment();
-                        fragment.setArguments(bundle);
+                            FavoritesHelper favoritesHelper = new FavoritesHelper();
+                            ArrayList<VideoItem> favVids = (ArrayList) favoritesHelper.loadFavorites(getApplicationContext());
 
-                        getFragmentManager().beginTransaction()
-                                .replace(R.id.main_container, fragment)
-                                .commit();
+                            if (favVids != null) {
+                                Collections.sort(favVids);
+                            }
 
-                        mDrawerLayout.closeDrawers();
+                            mNavAdapter.notifyItemChanged(position);
+
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelableArrayList(VideoListFragment.FAVORITE_VIDS, favVids);
+
+                            VideoListFragment fragment = new VideoListFragment();
+                            fragment.setArguments(bundle);
+
+                            getFragmentManager().beginTransaction()
+                                    .replace(R.id.main_container, fragment)
+                                    .commit();
+
+                            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                            mDrawerToggle.setDrawerIndicatorEnabled(true);
+
+                            mDrawerLayout.closeDrawers();
+
+                        } else {
+
+                            mTracker.send(new HitBuilders.EventBuilder()
+                                    .setCategory("UX")
+                                    .setAction("click")
+                                    .setLabel(mChannelList.get(position - 1).getmTitle())
+                                    .build());
+
+                            mToolbar.setTitle(mChannelList.get(position - 1).getmTitle());
+
+                            //Update view counts on nav drawer
+                            mEditor.putInt(mChannelList.get(position - 1).getmTitle(),
+                                    mChannelList.get(position - 1).getmVideoCount().intValue());
+                            mEditor.apply();
+                            mNavAdapter.notifyItemChanged(position);
+//                            mNavAdapter.notifyDataSetChanged();
+
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(VideoListFragment.CHANNEL_ITEM,
+                                    mChannelList.get(position - 1));
+
+                            VideoListFragment fragment = new VideoListFragment();
+                            fragment.setArguments(bundle);
+
+                            getFragmentManager().beginTransaction()
+                                    .replace(R.id.main_container, fragment)
+                                    .commit();
+
+                            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                            mDrawerToggle.setDrawerIndicatorEnabled(true);
+
+                            mDrawerLayout.closeDrawers();
+                        }
                     }
                 }));
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
 
         mDrawerToggle.syncState();
 
@@ -122,35 +193,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
         swipeRefreshLayout.setColorSchemeResources(R.color.primary, R.color.accent);
-
-        Button favButton = (Button) findViewById(R.id.drawer_favorites_button);
-        favButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                mToolbar.setTitle("Favorites");
-
-                FavoritesHelper favoritesHelper = new FavoritesHelper();
-                ArrayList<VideoItem> favVids = (ArrayList) favoritesHelper.loadFavorites(getApplicationContext());
-
-                if (favVids != null) {
-                    Collections.sort(favVids);
-                }
-
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(VideoListFragment.FAVORITE_VIDS, favVids);
-
-                VideoListFragment fragment = new VideoListFragment();
-                fragment.setArguments(bundle);
-
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.main_container, fragment)
-                        .commit();
-
-                mDrawerLayout.closeDrawers();
-
-            }
-        });
 
         if (savedInstanceState == null) {
 
@@ -193,6 +235,36 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onPause() {
+        if (mAdView != null) {
+            mAdView.pause();
+        }
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        if (mAdView != null) {
+            mAdView.resume();
+        }
+
+        if (mNavAdapter != null) {
+            mNavAdapter.notifyItemChanged(0);
+        }
+
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+
+        super.onDestroy();
+    }
 
     @Override
     public void onItemSelected(VideoItem selectedVideo) {
@@ -219,16 +291,23 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onTaskCompleted(List<ChannelItem> results) {
         mChannelList = results;
+//
+//        if (mNavRecyclerView.getAdapter() == null) {
+//            mNavAdapter = new NavBarAdapter(getApplicationContext(), mChannelList);
+//            mNavRecyclerView.setAdapter(mNavAdapter);
+//        } else {
+//            mNavAdapter.notifyDataSetChanged();
+//            swipeRefreshLayout.setRefreshing(false);
+//        }
 
-        if (mNavRecyclerView.getAdapter() == null) {
-            mNavAdapter = new NavBarAdapter(getApplicationContext(), mChannelList);
-            mNavRecyclerView.setAdapter(mNavAdapter);
-        } else {
-            mNavAdapter.notifyDataSetChanged();
+        mNavAdapter = new NavBarAdapter(getApplicationContext(), mChannelList);
+        mNavRecyclerView.setAdapter(mNavAdapter);
+
+        if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
-    }
 
+    }
 
     public void refreshChanList() {
         FetchChannelInfo ftc = new FetchChannelInfo(getApplicationContext());

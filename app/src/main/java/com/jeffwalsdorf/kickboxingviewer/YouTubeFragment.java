@@ -24,6 +24,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
@@ -44,13 +47,19 @@ public class YouTubeFragment extends Fragment {
 
     private ShareActionProvider mShareActionProvider;
 
-    public static final String API_KEY = YouTubeKey.DEVELOPER_KEY;
+    private static final String API_KEY = YouTubeKey.DEVELOPER_KEY;
 
     public static final String SELECTED_VIDEO = "selected_video";
     private static final String YOUTUBE_URL = " https://youtu.be/";
 
-    public YouTubeFragment(){
+    public static GoogleAnalytics mAnalytics;
+    public static Tracker mTracker;
+
+    private static Boolean mHasPlayed;
+
+    public YouTubeFragment() {
         setHasOptionsMenu(true);
+        mHasPlayed = false;
     }
 
     @Override
@@ -63,6 +72,14 @@ public class YouTubeFragment extends Fragment {
     }
 
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
+
+        mAnalytics = GoogleAnalytics.getInstance(getActivity());
+        mAnalytics.setLocalDispatchPeriod(1800);
+        mTracker = mAnalytics.newTracker(YouTubeKey.ANALYTICS_KEY);
+        mTracker.enableExceptionReporting(true);
+        mTracker.enableAdvertisingIdCollection(true);
+        mTracker.enableAutoActivityTracking(true);
+        mTracker.setScreenName("YouTube Screen");
 
 
         final View rootView = layoutInflater.inflate(R.layout.youtube_fragment, viewGroup, false);
@@ -105,6 +122,12 @@ public class YouTubeFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (isChecked) {
+                    mTracker.send(new HitBuilders.EventBuilder()
+                            .setCategory("UX")
+                            .setAction("click")
+                            .setLabel("Favorited")
+                            .build());
+
                     changeFavColor();
                     mFavoritesHelper.addFavorite(mContext, mVideoItem);
                     Snackbar.make(rootView, "Added to favorites", Snackbar.LENGTH_SHORT).show();
@@ -126,6 +149,39 @@ public class YouTubeFragment extends Fragment {
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 if (!b) {
                     youTubePlayer.cueVideo(vidId);
+                    youTubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
+                        @Override
+                        public void onPlaying() {
+                            if (!mHasPlayed) {
+                                mTracker.send(new HitBuilders.EventBuilder()
+                                        .setCategory("UX")
+                                        .setAction("click")
+                                        .setLabel("Video Played")
+                                        .build());
+                            }
+                            mHasPlayed = true;
+                        }
+
+                        @Override
+                        public void onPaused() {
+
+                        }
+
+                        @Override
+                        public void onStopped() {
+
+                        }
+
+                        @Override
+                        public void onBuffering(boolean b) {
+
+                        }
+
+                        @Override
+                        public void onSeekTo(int i) {
+
+                        }
+                    });
                 }
             }
 
@@ -158,6 +214,17 @@ public class YouTubeFragment extends Fragment {
         MenuItem item = menu.findItem(R.id.menu_item_share);
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         mShareActionProvider.setShareIntent(createShareForecastIntent());
+        mShareActionProvider.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
+            @Override
+            public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("UX")
+                        .setAction("click")
+                        .setLabel("Shared")
+                        .build());
+                return false;
+            }
+        });
 //        super.onCreateOptionsMenu(menu, inflater);
     }
 

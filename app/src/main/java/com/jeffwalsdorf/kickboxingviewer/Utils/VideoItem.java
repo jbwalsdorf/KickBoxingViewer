@@ -14,6 +14,7 @@ public class VideoItem implements Parcelable, Comparable<VideoItem> {
     private String thumbnailDefault;
     private String thumbnailMedium;
     private String thumbnailHigh;
+    private String thumbnailStandard;
 
     private String videoId;
     private DateTime publishedAt;
@@ -69,6 +70,14 @@ public class VideoItem implements Parcelable, Comparable<VideoItem> {
         this.thumbnailHigh = thumbnailHigh;
     }
 
+    public String getThumbnailStandard() {
+        return thumbnailStandard;
+    }
+
+    public void setThumbnailStandard(String thumbnailStandard) {
+        this.thumbnailStandard = thumbnailStandard;
+    }
+
     public String getVideoId() {
         return videoId;
     }
@@ -92,6 +101,7 @@ public class VideoItem implements Parcelable, Comparable<VideoItem> {
         thumbnailDefault = in.readString();
         thumbnailMedium = in.readString();
         thumbnailHigh = in.readString();
+        thumbnailStandard = in.readString();
         videoId = in.readString();
         publishedAt = (DateTime) in.readValue(DateTime.class.getClassLoader());
     }
@@ -109,6 +119,7 @@ public class VideoItem implements Parcelable, Comparable<VideoItem> {
         dest.writeString(thumbnailDefault);
         dest.writeString(thumbnailMedium);
         dest.writeString(thumbnailHigh);
+        dest.writeString(thumbnailStandard);
         dest.writeString(videoId);
         dest.writeValue(publishedAt);
     }

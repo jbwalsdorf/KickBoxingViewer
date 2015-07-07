@@ -29,7 +29,7 @@ public class YouTubeConnector {
     private YouTube.Channels.List channelInfo;
 
     static final String API_KEY = YouTubeKey.DEVELOPER_KEY;
-    static final long MAX_VIDEOS = 20;
+    static final long MAX_VIDEOS = 50;
 
     public YouTubeConnector(Context context) {
 
@@ -153,6 +153,7 @@ public class YouTubeConnector {
                 item.setThumbnailDefault(result.getSnippet().getThumbnails().getDefault().getUrl());
                 item.setThumbnailMedium(result.getSnippet().getThumbnails().getMedium().getUrl());
                 item.setThumbnailHigh(result.getSnippet().getThumbnails().getHigh().getUrl());
+//                item.setThumbnailStandard(result.getSnippet().getThumbnails().getStandard().getUrl());
                 item.setVideoId(result.getSnippet().getResourceId().getVideoId());
                 item.setPublishedAt(result.getSnippet().getPublishedAt());
                 items.add(item);
